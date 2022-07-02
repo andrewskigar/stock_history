@@ -1,0 +1,99 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Stock Viewer{% endblock %}
+
+{% block body %}
+<div class="w-full p-8">
+    <div class="flex space-x-4">
+        <div class="w-96">
+            {{ form_start(stock_form) }}
+            <div class="grid grid-cols-1 gap-6">
+                <label class="block">
+                    <span class="text-gray-700">{{ form_label(stock_form.companySymbol) }}</span>
+                    {{ form_widget(stock_form.companySymbol, {'attr': {'class': 'block w-full mt-1'}}) }}
+                    <span class="text-red-500 text-sm">{{ form_errors(stock_form.companySymbol) }}</span>
+                </label>
+                <label class="block">
+                    <span class="text-gray-700">{{ form_label(stock_form.startDate) }}</span>
+                    {{ form_widget(stock_form.startDate, {'attr': {'class': 'block w-full mt-1'}}) }}
+                    <span class="text-red-500 text-sm">{{ form_errors(stock_form.startDate) }}</span>
+                </label>
+                <label class="block">
+                    <span class="text-gray-700">{{ form_label(stock_form.endDate) }}</span>
+                    {{ form_widget(stock_form.endDate, {'attr': {'class': 'block w-full mt-1'}}) }}
+                    <span class="text-red-500 text-sm">{{ form_errors(stock_form.endDate) }}</span>
+                </label>
+                <label class="block">
+                    <span class="text-gray-700">{{ form_label(stock_form.email) }}</span>
+                    {{ form_widget(stock_form.email, {'attr': {'class': 'block w-full mt-1'}}) }}
+                    <span class="text-red-500 text-sm">{{ form_errors(stock_form.email) }}</span>
+                </label>
+                <label class="block">
+                    {{ form_widget(stock_form.submit, {'attr': {'class': 'py-2 px-3 bg-indigo-500 text-white font-semibold rounded-md shadow focus:outline-none'}}) }}
+                </label>
+            </div>
+            {{ form_end(stock_form) }}
+        </div>
+        <div class="flex-1">
+            {%  if (stock_history) %}
+            <table class="border-collapse table-auto w-full text-xs">
+                <thead>
+                <tr>
+                    <th class="border-b font-medium p-2 pt-0 pb-3 text-black-400 text-left">Date</th>
+                    <th class="border-b font-medium p-2 pt-0 pb-3 text-black-400 text-left">Open</th>
+                    <th class="border-b font-medium p-2 pt-0 pb-3 text-black-400 text-left">High</th>
+                    <th class="border-b font-medium p-2 pt-0 pb-3 text-black-400 text-left">Low</th>
+                    <th class="border-b font-medium p-2 pt-0 pb-3 text-black-400 text-left">Close</th>
+                    <th class="border-b font-medium p-2 pt-0 pb-3 text-black-400 text-left">Volume</th>
+                </tr>
+                </thead>
+                <tbody class="bg-white">
+                {% for stock in stock_history %}
+                <tr class="even:bg-gray-50">
+                    <td class="border-b border-slate-100 p-2 text-black-500">{{ stock.date }}</td>
+                    <td class="border-b border-slate-100 p-2 text-black-500">{{ stock.open|number_format(2, '.', ',') }}</td>
+                    <td class="border-b border-slate-100 p-2 text-black-500">{{ stock.high|number_format(2, '.', ',') }}</td>
+                    <td class="border-b border-slate-100 p-2 text-black-500">{{ stock.low|number_format(2, '.', ',') }}</td>
+                    <td class="border-b border-slate-100 p-2 text-black-500">{{ stock.close|number_format(2, '.', ',') }}</td>
+                    <td class="border-b border-slate-100 p-2 text-black-500">{{ stock.volume }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+        <div class="flex-1">
+            <div id="chartContainer" class="w-full h-full"></div>
+        </div>
+    </div>
+</div>
+
+{% if (stock_points) %}
+    <script>
+        window.onload = function() {
+            const chart = new CanvasJS.Chart("chartContainer", {
+                title: {
+                    text: "{{ current_stock.companySymbol }}"
+                },
+                subtitles: [{
+                    text: "Currency in USD"
+                }],
+                axisX: {
+                    valueFormatString: "DD MMM"
+                },
+                axisY: {
+                    suffix: " $"
+                },
+                data: [{
+                    type: "candlestick",
+                    xValueType: "dateTime",
+                    yValueFormatString: "#,##0.0 $",
+                    xValueFormatString: "DD MMM",
+                    dataPoints: {{ stock_points|json_encode(constant('JSON_NUMERIC_CHECK'))|raw }}
+                }]
+            });
+            chart.render();
+        }
+    </script>
+{% endif %}
+{% endblock %}
