@@ -98,12 +98,12 @@ class FormDto
         $this->email = $email;
     }
 
-    public static function getAllowedCompanySymbols()
+    public static function getAllowedCompanySymbols(): array
     {
         return array_values(static::COMPANY_SYMBOLS);
     }
 
-    public static function getCompanySymbols()
+    public static function getCompanySymbols(): array
     {
         return static::COMPANY_SYMBOLS;
     }

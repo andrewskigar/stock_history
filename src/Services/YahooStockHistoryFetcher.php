@@ -28,13 +28,14 @@ class YahooStockHistoryFetcher implements StockHistoryFetcherInterface
 
     public function fetchStockHistory(string $companySymbol, DateTime $startDate, DateTime $endDate): array
     {
-        $startDate = $startDate->modify('-1 days')->format('Y-m-d');
+        $clonedStartDate = clone $startDate;
+        $clonedStartDate = $clonedStartDate->modify('-1 days')->format('Y-m-d');
         $endDate = $endDate->format('Y-m-d');
 
         try {
             $response = $this->client->request('GET', self::ENDPOINT_URL, [
                 'query' => [
-                    'StartDateInclusive' => $startDate ,
+                    'StartDateInclusive' => $clonedStartDate,
                     'EndDateInclusive' => $endDate,
                     'Symbol' => $companySymbol,
                     'OrderBy' => 'Ascending',
