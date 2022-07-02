@@ -10,3 +10,4 @@
 4. **symfony server:start -d**
 5. create .env.local and add RAPID_API_KEY=  (key from email)
 6. run phpunit tests **symfony php bin/phpunit**
+7. open **symfony open:local:webmail** to check received email
