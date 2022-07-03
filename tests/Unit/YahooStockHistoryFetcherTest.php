@@ -14,7 +14,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 class YahooStockHistoryFetcherTest extends TestCase
 {
 
-    public function testYahooStockHistoryFetcherWithInvalidRequest(): void
+    public function test_YahooStockHistoryFetcher_with_invalid_request(): void
     {
         $client = new MockHttpClient([new MockResponse('invalid', ['http_code' => Response::HTTP_FORBIDDEN])]);
         $stockHistoryFetcher = new YahooStockHistoryFetcher($client, 'invalid');
@@ -27,11 +27,12 @@ class YahooStockHistoryFetcherTest extends TestCase
     /**
      * @dataProvider getStockHistory
      */
-    public function testYahooStockHistoryFetcher(array $expectedResult, ResponseInterface $response, string $companySymbol, DateTime $startDate, DateTime $endDate)
+    public function test_YahooStockHistoryFetcher(array $expectedResult, ResponseInterface $response, string $companySymbol, DateTime $startDate, DateTime $endDate)
     {
         $client = new MockHttpClient([$response]);
         $stockHistoryFetcher = new YahooStockHistoryFetcher($client, 'api_key');
         $result = $stockHistoryFetcher->fetchStockHistory($companySymbol, $startDate, $endDate);
+
         $this->assertSame($expectedResult, $result);
     }
 
