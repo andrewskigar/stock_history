@@ -11,6 +11,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class YahooStockHistoryFetcher implements StockHistoryFetcherInterface
 {
+
     public const EXCEPTION_MESSAGE = 'Stock history api endpoint error or invalid api key.';
 
     protected const ENDPOINT_URL = 'https://yahoofinance-stocks1.p.rapidapi.com/stock-prices';
@@ -34,15 +35,15 @@ class YahooStockHistoryFetcher implements StockHistoryFetcherInterface
 
         try {
             $response = $this->client->request('GET', self::ENDPOINT_URL, [
-                'query' => [
+                'query'   => [
                     'StartDateInclusive' => $clonedStartDate,
-                    'EndDateInclusive' => $endDate,
-                    'Symbol' => $companySymbol,
-                    'OrderBy' => 'Ascending',
+                    'EndDateInclusive'   => $endDate,
+                    'Symbol'             => $companySymbol,
+                    'OrderBy'            => 'Ascending',
                 ],
                 'headers' => [
                     'X-RapidAPI-Host' => self::RAPID_API_HOST,
-                    'X-RapidAPI-Key' => $this->rapidApiKey,
+                    'X-RapidAPI-Key'  => $this->rapidApiKey,
                 ],
             ]);
 

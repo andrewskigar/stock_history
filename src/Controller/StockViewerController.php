@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class StockViewerController extends AbstractController
 {
+
     #[Route('/', name: 'app_stock_viewer')]
     public function index(Request $request, StockHistoryFetcherInterface $stockHistoryFetcher, StockHistoryFormatter $stockHistoryFormatter, MailerInterface $mailer): Response
     {
@@ -32,16 +33,16 @@ class StockViewerController extends AbstractController
             $email = (new Email())
                 ->from($formDto->getEmail())
                 ->to($formDto->getEmail())
-                ->subject($formDto->getCompanySymbol() . ' => ' .$formDto->getCompanyNameBySymbol($formDto->getCompanySymbol()) )
+                ->subject($formDto->getCompanySymbol() . ' => ' . $formDto->getCompanyNameBySymbol($formDto->getCompanySymbol()))
                 ->text('From ' . $formDto->getFormattedStartDate() . ' to ' . $formDto->getFormattedEndDate());
 
             $mailer->send($email);
         }
 
         return $this->render('stock_viewer/index.html.twig', [
-            'stock_form' => $form->createView(),
+            'stock_form'    => $form->createView(),
             'stock_history' => $stockHistory,
-            'stock_points' => $stockPoints,
+            'stock_points'  => $stockPoints,
             'current_stock' => $formDto,
         ]);
     }
